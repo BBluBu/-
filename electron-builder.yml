@@ -1,0 +1,19 @@
+appId: com.campuslogin.app
+productName: CampusLogin
+directories:
+  output: release
+files:
+  - out/**/*
+asar: true
+win:
+  icon: resources/app.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true

@@ -1,0 +1,35 @@
+{
+  "name": "campus-login",
+  "version": "0.1.6",
+  "private": true,
+  "description": "Windows 校园网 Dr.COM 状态检测工具",
+  "main": "./out/main/index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "build": "npm run typecheck && electron-vite build",
+    "build:win": "npm run build && electron-builder --win nsis --x64",
+    "build:win:dir": "npm run build && electron-builder --win dir --x64",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^36.9.5",
+    "electron-builder": "^26.17.0",
+    "electron-vite": "^3.1.0",
+    "typescript": "~5.7.3",
+    "vite": "^6.1.0",
+    "vitest": "^3.0.0"
+  }
+}

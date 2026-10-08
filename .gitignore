@@ -1,0 +1,15 @@
+node_modules/
+out/
+dist/
+release/
+.tools/
+*.tsbuildinfo
+*.log
+.env
+.env.*
+previews/
+新建文件夹/
+.tmp-*
+remembered-credentials.json
+remembered-credentials.json.tmp
+.publish-source/
