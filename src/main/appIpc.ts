@@ -24,9 +24,14 @@ function readStartupSettings(): StartupSettings {
   }
   try {
     const settings = app.getLoginItemSettings({ path: process.execPath })
+    // openAtLogin uses Electron's default registry name; we write a custom name.
+    const item = settings.launchItems?.find((entry) =>
+      entry.name === 'CampusLogin' && entry.scope === 'user' &&
+      entry.path.toLowerCase() === process.execPath.toLowerCase()
+    )
     return {
       available: true,
-      enabled: settings.openAtLogin && settings.executableWillLaunchAtLogin !== false
+      enabled: item ? item.enabled : settings.openAtLogin && settings.executableWillLaunchAtLogin !== false
     }
   } catch {
     return { available: false, enabled: false }
@@ -51,7 +56,7 @@ export function registerAppIpc(): void {
     trustedWindow(event)
     if (typeof enabled !== 'boolean') throw new Error('无效的启动设置')
     if (!readStartupSettings().available) return { available: false, enabled: false }
-    app.setLoginItemSettings({ openAtLogin: enabled, path: process.execPath, name: 'CampusLogin' })
+    app.setLoginItemSettings({ openAtLogin: enabled, enabled, path: process.execPath, name: 'CampusLogin' })
     return readStartupSettings()
   })
 

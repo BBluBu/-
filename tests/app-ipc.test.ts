@@ -97,6 +97,35 @@ describe('应用操作 IPC', () => {
     expect(mocks.setLoginItemSettings).not.toHaveBeenCalled()
   })
 
+  it('自定义名称的启动项存在时，不因默认名称未注册而误报失败', () => {
+    const { event, handler } = setup()
+    mocks.getLoginItemSettings.mockReturnValue({
+      openAtLogin: false, executableWillLaunchAtLogin: true,
+      launchItems: [{ name: 'CampusLogin', path: process.execPath, scope: 'user', enabled: true }]
+    })
+    expect(handler(GET_STARTUP_SETTINGS_CHANNEL)(event)).toEqual({ available: true, enabled: true })
+  })
+
+  it('Windows 禁用的自定义启动项显示为关闭', () => {
+    const { event, handler } = setup()
+    mocks.getLoginItemSettings.mockReturnValue({
+      openAtLogin: true, executableWillLaunchAtLogin: true,
+      launchItems: [{ name: 'CampusLogin', path: process.execPath, scope: 'user', enabled: false }]
+    })
+    expect(handler(GET_STARTUP_SETTINGS_CHANNEL)(event)).toEqual({ available: true, enabled: false })
+  })
+
+  it('关闭时同时撤销启动注册及启用状态', () => {
+    const { event, handler } = setup()
+    mocks.setLoginItemSettings.mockImplementation(() => {
+      mocks.getLoginItemSettings.mockReturnValue({ openAtLogin: false, executableWillLaunchAtLogin: false })
+    })
+    expect(handler(SET_STARTUP_ENABLED_CHANNEL)(event, false)).toEqual({ available: true, enabled: false })
+    expect(mocks.setLoginItemSettings).toHaveBeenCalledWith({
+      openAtLogin: false, enabled: false, path: process.execPath, name: 'CampusLogin'
+    })
+  })
+
   it('关闭当前窗口，并拒绝非可信页面与无效设置', async () => {
     const { event, handler } = setup()
     expect(() => handler(SET_STARTUP_ENABLED_CHANNEL)(event, 'true')).toThrow()
